@@ -1,0 +1,127 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checking / linting
+.mypy_cache/
+.pyre/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# RAGForge data
+data/uploads/*
+data/processed/*
+data/indexes/*
+data/cache/*
+data/models/*
+
+# Keep data directories
+!data/uploads/.gitkeep
+!data/processed/.gitkeep
+!data/indexes/.gitkeep
+!data/cache/.gitkeep
+!data/models/.gitkeep
+
+# Vector databases / local stores
+chroma/
+qdrant/
+lancedb/
+*.db
+*.sqlite
+*.sqlite3
+
+# ML / Hugging Face
+.cache/
+huggingface/
+transformers/
+sentence_transformers/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Build / distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Packaging
+pip-wheel-metadata/
+MANIFEST
+
+# Docker
+docker-data/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Secrets / credentials
+*.pem
+*.key
+*.crt
+credentials.json
+service-account.json
+
+# Local configuration
+config.local.*
+settings.local.*
+
+# Database dumps
+*.dump
+*.sql.gz
+
+# Coverage
+.coverage.*
+coverage.xml
+
+# Generated documentation
+site/
+
+# Local development
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
