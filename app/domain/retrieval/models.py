@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
-from app.domain.chunks.models import Chunk
+from app.domain.chunks.models import Chunk, ChunkMetadata
 
 
 class RetrievalResult(BaseModel):
@@ -48,10 +48,39 @@ class RetrievalResult(BaseModel):
         description="Optional extra metadata from the retriever.",
     )
 
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_chunk(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "chunk" not in data and "content" in data:
+                import uuid
+                content = data.pop("content")
+                chunk_id = data.pop("chunk_id", None) or str(uuid.uuid4())
+                source = data.pop("source", None)
+                doc_id = data.pop("document_id", "")
+                meta = data.get("metadata", {})
+                chunk_meta = ChunkMetadata(
+                    document_id=doc_id or (meta.get("document_id", "") if isinstance(meta, dict) else ""),
+                    document_source=source or (meta.get("source") if isinstance(meta, dict) else None),
+                    chunk_index=int(meta.get("chunk_index", 0)) if isinstance(meta, dict) else 0,
+                )
+                data["chunk"] = Chunk(id=chunk_id, content=content, metadata=chunk_meta)
+            elif "chunk" in data:
+                data.pop("content", None)
+                data.pop("chunk_id", None)
+                data.pop("source", None)
+                data.pop("document_id", None)
+        return data
+
     @property
     def content(self) -> str:
         """Shortcut to the chunk's text content."""
         return self.chunk.content
+
+    @property
+    def chunk_id(self) -> str:
+        """Shortcut to the chunk ID."""
+        return self.chunk.id
 
     @property
     def document_id(self) -> str:

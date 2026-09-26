@@ -56,12 +56,21 @@ class BaseVectorStore(ABC):
         rank: int,
         metadata: dict | None = None,
     ) -> RetrievalResult:
-        """Helper to build a RetrievalResult from raw store output."""
+        """Helper to build a RetrievalResult (with a synthetic Chunk) from raw store output."""
+        from app.domain.chunks.models import Chunk, ChunkMetadata
         from app.domain.retrieval.models import RetrievalResult as RR
-        return RR(
+
+        chunk = Chunk(
+            id=chunk_id,
             content=chunk_content,
-            chunk_id=chunk_id,
-            source=source,
+            metadata=ChunkMetadata(
+                document_id=str((metadata or {}).get("document_id", "")),
+                document_source=source,
+                chunk_index=int((metadata or {}).get("chunk_index", 0)),
+            ),
+        )
+        return RR(
+            chunk=chunk,
             score=score,
             rank=rank,
             metadata=metadata or {},
