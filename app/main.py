@@ -115,14 +115,20 @@ def create_app() -> FastAPI:
     # Attach master API router
     app.include_router(api_router)
 
-    @app.get("/", tags=["Root"])
-    async def root() -> dict[str, str]:
-        return {
-            "name": settings.app_name,
-            "version": settings.app_version,
-            "docs": "/docs",
-            "api": "/api",
-        }
+    # Mount frontend static distribution if built
+    frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+    if frontend_dist.exists():
+        from fastapi.staticfiles import StaticFiles
+        app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
+    else:
+        @app.get("/", tags=["Root"])
+        async def root() -> dict[str, str]:
+            return {
+                "name": settings.app_name,
+                "version": settings.app_version,
+                "docs": "/docs",
+                "api": "/api",
+            }
 
     return app
 
