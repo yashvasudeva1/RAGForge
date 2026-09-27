@@ -8,11 +8,11 @@ import { TemplateGalleryModal } from './TemplateGalleryModal';
 import { usePipelineStore } from '../stores/pipelineStore';
 
 export const BuilderPage: React.FC = () => {
-  const { loadSchemas } = usePipelineStore();
+  const loadSchemas = usePipelineStore((state) => state.loadSchemas);
 
   useEffect(() => {
     loadSchemas();
-  }, [loadSchemas]);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex flex-col bg-slate-950 overflow-hidden">

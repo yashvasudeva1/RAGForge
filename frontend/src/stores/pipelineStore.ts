@@ -96,6 +96,7 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
   isLoadingSchemas: false,
 
   loadSchemas: async () => {
+    if (get().schemas.length > 0 || get().isLoadingSchemas) return;
     set({ isLoadingSchemas: true });
     try {
       const [schemas, categories] = await Promise.all([
@@ -103,6 +104,19 @@ export const usePipelineStore = create<PipelineState>((set, get) => ({
         fetchCategories(),
       ]);
       set({ schemas, categories, isLoadingSchemas: false });
+
+      // Automatically load the first starter template if the canvas is empty
+      if (get().nodes.length === 0) {
+        try {
+          const { fetchTemplates } = await import('../services/api');
+          const templates = await fetchTemplates();
+          if (templates && templates.length > 0) {
+            get().loadPipelineConfig(templates[0].pipeline);
+          }
+        } catch (tErr) {
+          console.warn('Could not auto-load starter template', tErr);
+        }
+      }
     } catch (e) {
       console.error('Failed to load schemas', e);
       set({ isLoadingSchemas: false });

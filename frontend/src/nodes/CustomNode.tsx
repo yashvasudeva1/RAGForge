@@ -49,8 +49,8 @@ function getCategoryIcon(cat: string) {
 }
 
 export const CustomNode = memo(({ id, data, selected }: NodeProps<any>) => {
-  const nodeData = data as RAGFlowNodeData;
-  const schema = nodeData.schema;
+  const nodeData = (data || {}) as RAGFlowNodeData;
+  const schema = nodeData.schema || ({} as any);
   const category = schema?.category || 'utility';
   const color = CATEGORY_COLORS[category] || CATEGORY_COLORS.utility;
   const IconComponent = getCategoryIcon(category);
